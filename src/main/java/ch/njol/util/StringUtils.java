@@ -135,7 +135,7 @@ public abstract class StringUtils {
 		final char[] s = string.toCharArray();
 		int c = 0;
 		while (c != -1) {
-			while (c < s.length && (s[c] == '.' || Character.isWhitespace(s[c])))
+			while (c < s.length && (s[c] == '.' || s[c] == '!' || s[c] == '?' || Character.isWhitespace(s[c])))
 				c++;
 			if (c == s.length)
 				return new String(s);
@@ -190,4 +190,19 @@ public abstract class StringUtils {
 		return string.substring(0, start.length()).equalsIgnoreCase(start);
 	}
 	
+	public final static String multiply(String s, int amount) {
+		Validate.notNull(s, "s");
+		char[] input = s.toCharArray();
+		char[] multiplied = new char[s.length() * amount];
+		for (int i = 0; i < amount; i++)
+			System.arraycopy(input, 0, multiplied, i * input.length, input.length);
+		return new String(multiplied);
+	}
+	
+	public final static String multiply(char c, int amount) {
+		char[] multiplied = new char[amount];
+		for (int i = 0; i < amount; i++)
+			multiplied[i] = c;
+		return new String(multiplied);
+	}
 }
