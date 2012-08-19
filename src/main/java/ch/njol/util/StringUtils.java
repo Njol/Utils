@@ -141,15 +141,17 @@ public abstract class StringUtils {
 				return new String(s);
 			if (c == 0 || s[c - 1] != '.') // don't capitalize directly after a dot - fixes URLs
 				s[c] = Character.toUpperCase(s[c]);
-			c = indexOf(s, '.', c + 1);
+			c = indexOf(s, c + 1, '.', '!', '?');
 		}
 		return new String(s);
 	}
 	
-	private final static int indexOf(final char[] s, final char c, final int start) {
-		for (int i = start; i < s.length; i++)
-			if (s[i] == c)
-				return i;
+	private final static int indexOf(final char[] s, final int start, final char... cs) {
+		for (int i = start; i < s.length; i++) {
+			for (char c : cs)
+				if (s[i] == c)
+					return i;
+		}
 		return -1;
 	}
 	
