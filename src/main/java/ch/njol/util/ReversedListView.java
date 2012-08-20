@@ -170,4 +170,31 @@ public class ReversedListView<T> implements List<T> {
 		return new ReversedListView<T>(list.subList(size() - toIndex, size() - fromIndex));
 	}
 	
+	@Override
+	public int hashCode() {
+		int hashCode = 1;
+		for (final T e : this)
+			hashCode = 31 * hashCode + (e == null ? 0 : e.hashCode());
+		return hashCode;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+		if (!(obj instanceof List<?>))
+			return false;
+		List<?> other = (List<?>) obj;
+		if (other.size() != this.size())
+			return false;
+		Iterator<?> os = other.iterator();
+		Iterator<T> ts = this.iterator();
+		while (ts.hasNext()) {
+			Object t = ts.next(), o = os.next();
+			if (t == null ? o != null : !t.equals(o))
+				return false;
+		}
+		return true;
+	}
+	
 }
