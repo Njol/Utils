@@ -27,7 +27,6 @@ import java.util.Set;
 
 /**
  * @author Peter Güttinger
- * 
  */
 public class BidiMap<T1, T2> extends HashMap<T1, T2> {
 	

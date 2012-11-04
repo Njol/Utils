@@ -26,7 +26,6 @@ import java.util.Iterator;
 
 /**
  * @author Peter Güttinger
- * 
  */
 public class EnumerationIterable<T> implements Iterable<T> {
 	

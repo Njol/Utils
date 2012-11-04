@@ -19,12 +19,12 @@
 
 package ch.njol.util;
 
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * @author Peter Güttinger
- * 
  */
 public abstract class StringUtils {
 	
@@ -55,7 +55,20 @@ public abstract class StringUtils {
 	 * @return
 	 */
 	public final static String replaceAll(final String string, final String regex, final Callback<String, Matcher> callback) {
-		final Matcher m = Pattern.compile(regex).matcher(string);
+		return replaceAll(string, Pattern.compile(regex), callback);
+	}
+	
+	/**
+	 * Performs regex replacing using a callback.
+	 * 
+	 * @param string the String in which should be searched & replaced
+	 * @param regex the Regex to match
+	 * @param callback the callback will be run for every match of the regex in the string, and should return the replacement string for the given match.
+	 *            If the callback returns null for any given match this function will immediately terminate and return null.
+	 * @return
+	 */
+	public final static String replaceAll(final String string, final Pattern regex, final Callback<String, Matcher> callback) {
+		final Matcher m = regex.matcher(string);
 		final StringBuffer sb = new StringBuffer();
 		while (m.find()) {
 			final String r = callback.run(m);
@@ -98,7 +111,7 @@ public abstract class StringUtils {
 	 * @return
 	 */
 	public static final String toString(final double d, final int accuracy) {
-		final String s = String.format("%." + accuracy + "f", d);
+		final String s = String.format(Locale.ENGLISH, "%." + accuracy + "f", d);
 		int c = s.length() - 1;
 		while (s.charAt(c) == '0')
 			c--;
@@ -148,7 +161,7 @@ public abstract class StringUtils {
 	
 	private final static int indexOf(final char[] s, final int start, final char... cs) {
 		for (int i = start; i < s.length; i++) {
-			for (char c : cs)
+			for (final char c : cs)
 				if (s[i] == c)
 					return i;
 		}
@@ -156,21 +169,32 @@ public abstract class StringUtils {
 	}
 	
 	/**
-	 * Finds a number before the specified index (if any). Only whitespace is allowed between the index and the number.
+	 * Finds a number before the specified index (if any). Only whitespace is allowed between the index and the number, and the number must either be at the start of the sequence
+	 * or be preceded with whitespace.
 	 * 
 	 * @param s
-	 * @param index
+	 * @param index to start searching at (backwards)
 	 * @return the number or -1 if none.
 	 */
-	public final static int numberBefore(final CharSequence s, final int index) {
+	public final static double numberBefore(final CharSequence s, final int index) {
 		boolean stillWhitespace = true;
+		boolean hasDot = false;
 		int start = -1, end = -1;
-		for (int i = index - 1; i >= 0; i--) {
+		for (int i = index; i >= 0; i--) {
 			if ('0' < s.charAt(i) && s.charAt(i) < '9') {
 				if (start == -1)
 					start = end = i;
 				else
 					start--;
+				stillWhitespace = false;
+			} else if (s.charAt(i) == '.') {
+				if (hasDot)
+					break;
+				if (start == -1)
+					start = end = i;
+				else
+					start--;
+				hasDot = true;
 				stillWhitespace = false;
 			} else if (Character.isWhitespace(s.charAt(i))) {
 				if (stillWhitespace)
@@ -182,27 +206,44 @@ public abstract class StringUtils {
 		}
 		if (start == -1)
 			return -1;
-		return Integer.parseInt(s.subSequence(start, end + 1).toString());
+		if (s.charAt(start) == '.')
+			return -1;
+		if (start != 0 && !Character.isWhitespace(s.charAt(start - 1)))
+			return -1;
+		return Double.parseDouble(s.subSequence(start, end + 1).toString());
 	}
 	
 	public static boolean startsWithIgnoreCase(final String string, final String start) {
-		Validate.notNull(string, start);
-		if (string.length() < start.length())
-			return false;
-		return string.substring(0, start.length()).equalsIgnoreCase(start);
+		return startsWithIgnoreCase(string, start, 0);
 	}
 	
-	public final static String multiply(String s, int amount) {
-		Validate.notNull(s, "s");
-		char[] input = s.toCharArray();
-		char[] multiplied = new char[s.length() * amount];
+	public static boolean startsWithIgnoreCase(final String string, final String start, final int offset) {
+		assert string != null;
+		assert start != null;
+		if (string.length() < offset + start.length())
+			return false;
+		return string.substring(offset, start.length()).equalsIgnoreCase(start);
+	}
+	
+	public static boolean endsWithIgnoreCase(final String string, final String end) {
+		assert string != null;
+		assert end != null;
+		if (string.length() < end.length())
+			return false;
+		return string.substring(string.length() - end.length()).equalsIgnoreCase(end);
+	}
+	
+	public final static String multiply(final String s, final int amount) {
+		assert s != null;
+		final char[] input = s.toCharArray();
+		final char[] multiplied = new char[s.length() * amount];
 		for (int i = 0; i < amount; i++)
 			System.arraycopy(input, 0, multiplied, i * input.length, input.length);
 		return new String(multiplied);
 	}
 	
-	public final static String multiply(char c, int amount) {
-		char[] multiplied = new char[amount];
+	public final static String multiply(final char c, final int amount) {
+		final char[] multiplied = new char[amount];
 		for (int i = 0; i < amount; i++)
 			multiplied[i] = c;
 		return new String(multiplied);

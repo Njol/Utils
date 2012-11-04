@@ -22,23 +22,20 @@ package ch.njol.util.iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import ch.njol.util.Validate;
-
 /**
  * @author Peter Güttinger
- * 
  */
 public class ReversedListIterator<T> implements ListIterator<T> {
 	
 	private final ListIterator<T> iter;
 	
 	public ReversedListIterator(final List<T> list) {
-		Validate.notNull(list, "list");
+		assert list != null;
 		iter = list.listIterator(list.size());
 	}
 	
 	public ReversedListIterator(final List<T> list, final int index) {
-		Validate.notNull(list, "list");
+		assert list != null;
 		iter = list.listIterator(list.size() - index);
 	}
 	

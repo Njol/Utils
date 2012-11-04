@@ -23,7 +23,6 @@ import java.util.Collection;
 
 /**
  * @author Peter Güttinger
- * 
  */
 public abstract class Validate {
 	

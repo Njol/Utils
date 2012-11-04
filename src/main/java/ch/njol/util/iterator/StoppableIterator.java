@@ -23,11 +23,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import ch.njol.util.Checker;
-import ch.njol.util.Validate;
 
 /**
  * @author Peter Güttinger
- * 
  */
 public class StoppableIterator<T> implements Iterator<T> {
 	
@@ -47,7 +45,7 @@ public class StoppableIterator<T> implements Iterator<T> {
 	 *            This doesn't change anything if the iterator ends before the stopper stops.
 	 */
 	public StoppableIterator(final Iterator<T> iter, final Checker<T> stopper, final boolean returnLast) {
-		Validate.notNull(stopper, "stopper");
+		assert stopper != null;
 		this.iter = iter;
 		this.stopper = stopper;
 		this.returnLast = returnLast;

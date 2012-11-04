@@ -24,7 +24,6 @@ import java.util.NoSuchElementException;
 
 /**
  * @author Peter Güttinger
- * 
  */
 public class SingleItemIterator<T> implements Iterator<T> {
 	

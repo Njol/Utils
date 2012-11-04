@@ -24,33 +24,19 @@ import java.util.NoSuchElementException;
 
 /**
  * @author Peter Güttinger
+ * 
+ * @param <T>
  */
-public abstract class NonNullIterator<T> implements Iterator<T> {
-	
-	private T current = null;
-	private boolean ended = false;
+public class EmptyIterator<T> implements Iterator<T> {
 	
 	@Override
-	public final boolean hasNext() {
-		if (current != null)
-			return true;
-		if (ended)
-			return false;
-		current = getNext();
-		if (current == null)
-			ended = true;
-		return !ended;
+	public boolean hasNext() {
+		return false;
 	}
 	
-	protected abstract T getNext();
-	
 	@Override
-	public final T next() {
-		if (!hasNext())
-			throw new NoSuchElementException();
-		final T t = current;
-		current = null;
-		return t;
+	public T next() {
+		throw new NoSuchElementException();
 	}
 	
 	@Override

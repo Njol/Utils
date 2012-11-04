@@ -29,14 +29,13 @@ import ch.njol.util.iterator.ReversedListIterator;
 
 /**
  * @author Peter Güttinger
- * 
  */
 public class ReversedListView<T> implements List<T> {
 	
 	private final List<T> list;
 	
 	public ReversedListView(final List<T> list) {
-		Validate.notNull(list, "list");
+		assert list != null;
 		this.list = list;
 	}
 	
@@ -179,18 +178,18 @@ public class ReversedListView<T> implements List<T> {
 	}
 	
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj == this)
 			return true;
 		if (!(obj instanceof List<?>))
 			return false;
-		List<?> other = (List<?>) obj;
+		final List<?> other = (List<?>) obj;
 		if (other.size() != this.size())
 			return false;
-		Iterator<?> os = other.iterator();
-		Iterator<T> ts = this.iterator();
+		final Iterator<?> os = other.iterator();
+		final Iterator<T> ts = this.iterator();
 		while (ts.hasNext()) {
-			Object t = ts.next(), o = os.next();
+			final Object t = ts.next(), o = os.next();
 			if (t == null ? o != null : !t.equals(o))
 				return false;
 		}
