@@ -13,7 +13,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Copyright 2011, 2012 Peter Güttinger
+ * Copyright 2011-2013 Peter Güttinger
  * 
  */
 
@@ -38,7 +38,6 @@ public class StoppableIterator<T> implements Iterator<T> {
 	private boolean calledNext = false;
 	
 	/**
-	 * 
 	 * @param iter
 	 * @param stopper Called for every element. If it returns true the iteration is stopped.
 	 * @param returnLast Whether to return the last element, i.e. the element on which the stopper stops.

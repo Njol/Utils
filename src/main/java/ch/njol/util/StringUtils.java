@@ -13,12 +13,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Copyright 2011, 2012 Peter Güttinger
+ * Copyright 2011-2013 Peter Güttinger
  * 
  */
 
 package ch.njol.util;
 
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +28,11 @@ import java.util.regex.Pattern;
  * @author Peter Güttinger
  */
 public abstract class StringUtils {
+	
+	public final static void checkIndices(final String s, final int start, final int end) {
+		if (start < 0 || end > s.length())
+			throw new StringIndexOutOfBoundsException("invalid start/end indices " + start + "," + end + " for string \"" + s + "\" (length " + s.length() + ")");
+	}
 	
 	/**
 	 * Appends the english order suffix to the given number.
@@ -82,9 +88,10 @@ public abstract class StringUtils {
 	
 	public static int count(final String s, final char c) {
 		int r = 0;
-		for (final char x : s.toCharArray())
-			if (x == c)
+		for (int i = 0; i < s.length(); i++) {
+			if (c == s.charAt(i))
 				r++;
+		}
 		return r;
 	}
 	
@@ -93,8 +100,7 @@ public abstract class StringUtils {
 	}
 	
 	public static int count(final String s, final char c, final int start, final int end) {
-		if (start < 0 || end > s.length())
-			throw new StringIndexOutOfBoundsException("invalid start/end indices " + start + "," + end + " for string \"" + s + "\" (length " + s.length() + ")");
+		checkIndices(s, start, end);
 		int r = 0;
 		for (int i = start; i < end; i++) {
 			if (s.charAt(i) == c)
@@ -103,8 +109,17 @@ public abstract class StringUtils {
 		return r;
 	}
 	
+	public final static boolean contains(final String s, final char c, final int start, final int end) {
+		checkIndices(s, start, end);
+		for (int i = start; i < end; i++) {
+			if (s.charAt(i) == c)
+				return true;
+		}
+		return false;
+	}
+	
 	/**
-	 * Gets a rounded representation of a number
+	 * Gets a rounded english (##.##) representation of a number
 	 * 
 	 * @param d The number to be turned into a string
 	 * @param accuracy Maximum number of digits after the period
@@ -128,6 +143,14 @@ public abstract class StringUtils {
 		return Character.toUpperCase(s.charAt(0)) + s.substring(1);
 	}
 	
+	/**
+	 * Equal to {@link String#substring(int, int)}, but allows negative indices that are counted from the end of the string.
+	 * 
+	 * @param s
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	public static final String substring(final String s, int start, int end) {
 		if (start < 0)
 			start = start + s.length();
@@ -139,7 +162,7 @@ public abstract class StringUtils {
 	}
 	
 	/**
-	 * Capitalizes the first character of the string and all characters that follow periods.
+	 * Capitalizes the first character of the string and all characters that follow periods, exclamation and question marks.
 	 * 
 	 * @param string
 	 * @return
@@ -152,7 +175,7 @@ public abstract class StringUtils {
 				c++;
 			if (c == s.length)
 				return new String(s);
-			if (c == 0 || s[c - 1] != '.') // don't capitalize directly after a dot - fixes URLs
+			if (c == 0 || Character.isWhitespace(s[c - 1]))
 				s[c] = Character.toUpperCase(s[c]);
 			c = indexOf(s, c + 1, '.', '!', '?');
 		}
@@ -169,34 +192,63 @@ public abstract class StringUtils {
 	}
 	
 	/**
-	 * Finds a number before the specified index (if any). Only whitespace is allowed between the index and the number, and the number must either be at the start of the sequence
-	 * or be preceded with whitespace.
+	 * Shorthand for <tt>{@link #numberAt(CharSequence, int, boolean) numberAt}(s, index, true)</tt>
 	 * 
 	 * @param s
-	 * @param index to start searching at (backwards)
-	 * @return the number or -1 if none.
+	 * @param index
+	 * @return
+	 */
+	public final static double numberAfter(final CharSequence s, final int index) {
+		return numberAt(s, index, true);
+	}
+	
+	/**
+	 * Shorthand for <tt>{@link #numberAt(CharSequence, int, boolean) numberAt}(s, index, false)</tt>
+	 * 
+	 * @param s
+	 * @param index
+	 * @return
 	 */
 	public final static double numberBefore(final CharSequence s, final int index) {
+		return numberAt(s, index, false);
+	}
+	
+	/**
+	 * Finds a positive number in the given CharSequence, starting at the given index, and searching in the given direction.
+	 * <p>
+	 * The number has to start exactly at the given index (ignoring whitespaces), and will only count if the other end of the number is either at an end of the string or padded by
+	 * whitespace.
+	 * 
+	 * @param s The ChatSequence to search the number in
+	 * @param index The index to start searching at (inclusive)
+	 * @param forward Whether to search forwards or backwards
+	 * @return The number found or -1 if no mtching number was found
+	 */
+	public final static double numberAt(final CharSequence s, final int index, final boolean forward) {
+		assert s != null;
+		assert index >= 0 && index < s.length() : index;
+		final int direction = forward ? 1 : -1;
 		boolean stillWhitespace = true;
 		boolean hasDot = false;
-		int start = -1, end = -1;
-		for (int i = index; i >= 0; i--) {
-			if ('0' < s.charAt(i) && s.charAt(i) < '9') {
-				if (start == -1)
-					start = end = i;
+		int d1 = -1, d2 = -1;
+		for (int i = index; i >= 0 && i < s.length(); i += direction) {
+			final char c = s.charAt(i);
+			if ('0' <= c && c <= '9') {
+				if (d1 == -1)
+					d1 = d2 = i;
 				else
-					start--;
+					d1 += direction;
 				stillWhitespace = false;
-			} else if (s.charAt(i) == '.') {
+			} else if (c == '.') {
 				if (hasDot)
 					break;
-				if (start == -1)
-					start = end = i;
+				if (d1 == -1)
+					d1 = d2 = i;
 				else
-					start--;
+					d1 += direction;
 				hasDot = true;
 				stillWhitespace = false;
-			} else if (Character.isWhitespace(s.charAt(i))) {
+			} else if (Character.isWhitespace(c)) {
 				if (stillWhitespace)
 					continue;
 				break;
@@ -204,13 +256,13 @@ public abstract class StringUtils {
 				break;
 			}
 		}
-		if (start == -1)
+		if (d1 == -1)
 			return -1;
-		if (s.charAt(start) == '.')
+		if (s.charAt(Math.min(d1, d2)) == '.')
 			return -1;
-		if (start != 0 && !Character.isWhitespace(s.charAt(start - 1)))
+		if (d1 + direction > 0 && d1 + direction < s.length() && !Character.isWhitespace(s.charAt(d1 + direction)))
 			return -1;
-		return Double.parseDouble(s.subSequence(start, end + 1).toString());
+		return Double.parseDouble(s.subSequence(Math.min(d1, d2), Math.max(d1, d2) + 1).toString());
 	}
 	
 	public static boolean startsWithIgnoreCase(final String string, final String start) {
@@ -235,8 +287,9 @@ public abstract class StringUtils {
 	
 	public final static String multiply(final String s, final int amount) {
 		assert s != null;
+		assert amount >= 0 : amount;
 		final char[] input = s.toCharArray();
-		final char[] multiplied = new char[s.length() * amount];
+		final char[] multiplied = new char[input.length * amount];
 		for (int i = 0; i < amount; i++)
 			System.arraycopy(input, 0, multiplied, i * input.length, input.length);
 		return new String(multiplied);
@@ -248,4 +301,75 @@ public abstract class StringUtils {
 			multiplied[i] = c;
 		return new String(multiplied);
 	}
+	
+	public static String join(final Object[] strings) {
+		return join(strings, "", 0, strings.length);
+	}
+	
+	public static String join(final Object[] strings, final String delimiter) {
+		return join(strings, delimiter, 0, strings.length);
+	}
+	
+	public static String join(final Object[] strings, final String delimiter, final int start, final int end) {
+		assert strings != null;
+		assert start >= 0 && start < end && end <= strings.length : start + "," + end;
+		if (start >= strings.length)
+			return "";
+		final StringBuilder b = new StringBuilder("" + strings[start]);
+		for (int i = start + 1; i < end; i++) {
+			b.append(delimiter);
+			b.append(strings[i]);
+		}
+		return b.toString();
+	}
+	
+	public static String join(final Iterable<?> strings) {
+		return join(strings.iterator(), "");
+	}
+	
+	public static String join(final Iterable<?> strings, final String delimiter) {
+		return join(strings.iterator(), delimiter);
+	}
+	
+	public static String join(final Iterator<?> strings, final String delimiter) {
+		assert strings != null;
+		if (!strings.hasNext())
+			return "";
+		final StringBuilder b = new StringBuilder("" + strings.next());
+		while (strings.hasNext()) {
+			b.append(delimiter);
+			b.append(strings.next());
+		}
+		return b.toString();
+	}
+	
+	/**
+	 * Scans the string starting at <tt>start</tt> for digits.
+	 * 
+	 * @param s
+	 * @param start Index of the first digit
+	 * @return The index <i>after</i> the last digit or <tt>start</tt> if there are no digits at the given index
+	 */
+	public final static int findLastDigit(final String s, final int start) {
+		int end = start;
+		while (end < s.length() && '0' <= s.charAt(end) && s.charAt(end) <= '9')
+			end++;
+		return end;
+	}
+	
+	/**
+	 * Searches for whether a String contains any of the characters of another string.
+	 * 
+	 * @param s
+	 * @param chars
+	 * @return
+	 */
+	public static boolean containsAny(final String s, final String chars) {
+		for (int i = 0; i < chars.length(); i++) {
+			if (s.indexOf(chars.charAt(i)) != -1)
+				return true;
+		}
+		return false;
+	}
+	
 }

@@ -13,7 +13,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Copyright 2011, 2012 Peter Güttinger
+ * Copyright 2011-2013 Peter Güttinger
  * 
  */
 
@@ -37,6 +37,16 @@ public abstract class Math2 {
 	public final static int max(final int... nums) {
 		assert nums != null && nums.length != 0;
 		int max = nums[0];
+		for (int i = 1; i < nums.length; i++) {
+			if (nums[i] > max)
+				max = nums[i];
+		}
+		return max;
+	}
+	
+	public final static double max(final double... nums) {
+		assert nums != null && nums.length != 0;
+		double max = nums[0];
 		for (int i = 1; i < nums.length; i++) {
 			if (nums[i] > max)
 				max = nums[i];
@@ -70,13 +80,29 @@ public abstract class Math2 {
 	public static final int fit(final int min, final int x, final int max) {
 		return x <= min ? min : x >= max ? max : x;
 	}
+	
 	public static final long fit(final long min, final long x, final long max) {
 		return x <= min ? min : x >= max ? max : x;
 	}
+	
 	public static final float fit(final float min, final float x, final float max) {
 		return x <= min ? min : x >= max ? max : x;
 	}
+	
 	public static final double fit(final double min, final double x, final double max) {
 		return x <= min ? min : x >= max ? max : x;
 	}
+	
+	/**
+	 * Modulo that returns positive values even for negative arguments.
+	 * 
+	 * @param d
+	 * @param m
+	 * @return <tt>d%m < 0 ? d%m + m : d%m</tt>
+	 */
+	public final static double mod(final double d, final double m) {
+		final double r = d % m;
+		return r < 0 ? r + m : r;
+	}
+	
 }

@@ -13,7 +13,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Copyright 2011, 2012 Peter Güttinger
+ * Copyright 2011-2013 Peter Güttinger
  * 
  */
 
@@ -23,7 +23,6 @@ import java.io.Serializable;
 import java.util.Map.Entry;
 
 /**
- * 
  * @author Peter Güttinger
  */
 public class Pair<T1, T2> implements Entry<T1, T2>, Cloneable, Serializable {

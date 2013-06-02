@@ -19,6 +19,37 @@
 
 package ch.njol.util;
 
-public interface Callback<R, A> {
-	public R run(A arg);
+public class Reference<T> {
+	
+	private T value = null;
+	
+	public Reference() {}
+	
+	public Reference(final T value) {
+		this.value = value;
+	}
+	
+	public T get() {
+		return value;
+	}
+	
+	public void set(final T value) {
+		this.value = value;
+	}
+	
+	@Override
+	public String toString() {
+		return value.toString();
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		return obj == null ? value == null : obj.equals(value);
+	}
+	
+	@Override
+	public int hashCode() {
+		return value == null ? 0 : value.hashCode();
+	}
+	
 }
