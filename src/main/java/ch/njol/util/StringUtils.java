@@ -60,7 +60,7 @@ public abstract class StringUtils {
 	 *            If the callback returns null for any given match this function will immediately terminate and return null.
 	 * @return
 	 */
-	public final static String replaceAll(final String string, final String regex, final Callback<String, Matcher> callback) {
+	public final static String replaceAll(final CharSequence string, final String regex, final Callback<String, Matcher> callback) {
 		return replaceAll(string, Pattern.compile(regex), callback);
 	}
 	
@@ -73,7 +73,7 @@ public abstract class StringUtils {
 	 *            If the callback returns null for any given match this function will immediately terminate and return null.
 	 * @return
 	 */
-	public final static String replaceAll(final String string, final Pattern regex, final Callback<String, Matcher> callback) {
+	public final static String replaceAll(final CharSequence string, final Pattern regex, final Callback<String, Matcher> callback) {
 		final Matcher m = regex.matcher(string);
 		final StringBuffer sb = new StringBuffer();
 		while (m.find()) {
@@ -126,6 +126,9 @@ public abstract class StringUtils {
 	 * @return
 	 */
 	public static final String toString(final double d, final int accuracy) {
+		assert accuracy >= 0;
+		if (accuracy <= 0)
+			return "" + Math.round(d);
 		final String s = String.format(Locale.ENGLISH, "%." + accuracy + "f", d);
 		int c = s.length() - 1;
 		while (s.charAt(c) == '0')
@@ -370,6 +373,22 @@ public abstract class StringUtils {
 				return true;
 		}
 		return false;
+	}
+
+	public final static boolean equals(final String s1, final String s2, final boolean caseSensitive) {
+		return caseSensitive ? s1.equals(s2) : s1.equalsIgnoreCase(s2);
+	}
+	
+	public final static boolean contains(final String haystack, final String needle, final boolean caseSensitive) {
+		if (caseSensitive)
+			return haystack.contains(needle);
+		return haystack.toLowerCase().contains(needle.toLowerCase());
+	}
+	
+	public final static String replace(final String haystack, final String needle, final String replacement, final boolean caseSensitive) {
+		if (caseSensitive)
+			return haystack.replace(needle, replacement);
+		return haystack.replaceAll("(?ui)" + Pattern.quote(needle), replacement);
 	}
 	
 }

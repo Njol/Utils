@@ -81,6 +81,10 @@ public abstract class Math2 {
 		return x <= min ? min : x >= max ? max : x;
 	}
 	
+	public static final short fit(final short min, final short x, final short max) {
+		return x <= min ? min : x >= max ? max : x;
+	}
+	
 	public static final long fit(final long min, final long x, final long max) {
 		return x <= min ? min : x >= max ? max : x;
 	}
@@ -102,6 +106,30 @@ public abstract class Math2 {
 	 */
 	public final static double mod(final double d, final double m) {
 		final double r = d % m;
+		return r < 0 ? r + m : r;
+	}
+	
+	/**
+	 * Modulo that returns positive values even for negative arguments.
+	 * 
+	 * @param d
+	 * @param m
+	 * @return <tt>d%m < 0 ? d%m + m : d%m</tt>
+	 */
+	public final static float mod(final float d, final float m) {
+		final float r = d % m;
+		return r < 0 ? r + m : r;
+	}
+	
+	/**
+	 * Modulo that returns positive values even for negative arguments.
+	 * 
+	 * @param d
+	 * @param m
+	 * @return <tt>d%m < 0 ? d%m + m : d%m</tt>
+	 */
+	public final static int mod(final int d, final int m) {
+		final int r = d % m;
 		return r < 0 ? r + m : r;
 	}
 	

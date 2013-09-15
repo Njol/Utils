@@ -28,6 +28,13 @@ import java.util.NoSuchElementException;
  */
 public class EmptyIterator<T> implements Iterator<T> {
 	
+	public final static EmptyIterator<Object> instance = new EmptyIterator<Object>();
+	
+	@SuppressWarnings("unchecked")
+	public final static <T> EmptyIterator<T> get() {
+		return (EmptyIterator<T>) instance;
+	}
+	
 	@Override
 	public boolean hasNext() {
 		return false;
@@ -41,6 +48,16 @@ public class EmptyIterator<T> implements Iterator<T> {
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		return obj instanceof EmptyIterator;
+	}
+	
+	@Override
+	public int hashCode() {
+		return 0;
 	}
 	
 }
