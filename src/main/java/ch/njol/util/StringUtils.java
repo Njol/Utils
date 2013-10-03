@@ -374,7 +374,7 @@ public abstract class StringUtils {
 		}
 		return false;
 	}
-
+	
 	public final static boolean equals(final String s1, final String s2, final boolean caseSensitive) {
 		return caseSensitive ? s1.equals(s2) : s1.equalsIgnoreCase(s2);
 	}

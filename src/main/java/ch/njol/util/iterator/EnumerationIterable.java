@@ -29,9 +29,9 @@ import java.util.Iterator;
  */
 public class EnumerationIterable<T> implements Iterable<T> {
 	
-	private final Enumeration<T> e;
+	private final Enumeration<? extends T> e;
 	
-	public EnumerationIterable(final Enumeration<T> e) {
+	public EnumerationIterable(final Enumeration<? extends T> e) {
 		this.e = e;
 	}
 	

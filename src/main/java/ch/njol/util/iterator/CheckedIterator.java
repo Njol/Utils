@@ -43,11 +43,12 @@ public class CheckedIterator<T> implements Iterator<T> {
 			return true;
 		if (!iter.hasNext())
 			return false;
-		returnedNext = false;
 		while (iter.hasNext()) {
 			next = iter.next();
-			if (checker.check(next))
+			if (checker.check(next)) {
+				returnedNext = false;
 				return true;
+			}
 		}
 		return false;
 	}
