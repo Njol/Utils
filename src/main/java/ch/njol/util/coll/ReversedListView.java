@@ -17,7 +17,7 @@
  * 
  */
 
-package ch.njol.util;
+package ch.njol.util.coll;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import ch.njol.util.iterator.ReversedListIterator;
+import ch.njol.util.coll.iterator.ReversedListIterator;
 
 /**
  * @author Peter Güttinger

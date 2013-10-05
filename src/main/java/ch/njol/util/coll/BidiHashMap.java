@@ -17,7 +17,7 @@
  * 
  */
 
-package ch.njol.util;
+package ch.njol.util.coll;
 
 import java.util.Collection;
 import java.util.HashMap;

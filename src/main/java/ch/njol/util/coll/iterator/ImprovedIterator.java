@@ -17,53 +17,36 @@
  * 
  */
 
-package ch.njol.util.iterator;
+package ch.njol.util.coll.iterator;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
-import ch.njol.util.Checker;
-
-public class CheckedIterator<T> implements Iterator<T> {
+public class ImprovedIterator<T> implements Iterator<T> {
 	
 	private final Iterator<T> iter;
-	private final Checker<T> checker;
-	private boolean returnedNext = true;
+	private T current = null;
 	
-	private T next;
-	
-	public CheckedIterator(final Iterator<T> iter, final Checker<T> checker) {
+	public ImprovedIterator(final Iterator<T> iter) {
 		this.iter = iter;
-		this.checker = checker;
 	}
 	
 	@Override
 	public boolean hasNext() {
-		if (!returnedNext)
-			return true;
-		if (!iter.hasNext())
-			return false;
-		while (iter.hasNext()) {
-			next = iter.next();
-			if (checker.check(next)) {
-				returnedNext = false;
-				return true;
-			}
-		}
-		return false;
+		return iter.hasNext();
 	}
 	
 	@Override
 	public T next() {
-		if (!hasNext())
-			throw new NoSuchElementException();
-		returnedNext = true;
-		return next;
+		return current = iter.next();
 	}
 	
 	@Override
 	public void remove() {
 		iter.remove();
+	}
+	
+	public T current() {
+		return current;
 	}
 	
 }

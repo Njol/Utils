@@ -1,4 +1,4 @@
-package ch.njol.util;
+package ch.njol.util.coll;
 
 import static org.junit.Assert.*;
 

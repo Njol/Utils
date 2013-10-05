@@ -19,7 +19,7 @@
  * 
  */
 
-package ch.njol.util.iterator;
+package ch.njol.util.coll.iterator;
 
 import java.util.Enumeration;
 import java.util.Iterator;

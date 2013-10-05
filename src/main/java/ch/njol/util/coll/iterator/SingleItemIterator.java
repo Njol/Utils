@@ -17,47 +17,36 @@
  * 
  */
 
-package ch.njol.util.iterator;
+package ch.njol.util.coll.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * A simple iterator to iterate over an array.
- * 
  * @author Peter Güttinger
  */
-public class ArrayIterator<T> implements Iterator<T> {
+public class SingleItemIterator<T> implements Iterator<T> {
 	
-	private final T[] array;
-	private int index = 0;
+	private final T item;
+	private boolean returned = false;
 	
-	public ArrayIterator(final T[] array) {
-		this.array = array;
-	}
-	
-	public ArrayIterator(final T[] array, final int start) {
-		this.array = array;
-		index = start;
+	public SingleItemIterator(final T item) {
+		this.item = item;
 	}
 	
 	@Override
 	public boolean hasNext() {
-		return index < array.length;
+		return !returned;
 	}
 	
 	@Override
 	public T next() {
-		if (index >= array.length)
+		if (returned)
 			throw new NoSuchElementException();
-		return array[index++];
+		returned = true;
+		return item;
 	}
 	
-	/**
-	 * not supported by arrays.
-	 * 
-	 * @throws UnsupportedOperationException always
-	 */
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();

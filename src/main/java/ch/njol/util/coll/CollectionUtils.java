@@ -17,7 +17,7 @@
  * 
  */
 
-package ch.njol.util;
+package ch.njol.util.coll;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+
+import ch.njol.util.Pair;
 
 /**
  * Utils for collections and arrays. All mehods will not print any errors for <tt>null</tt> collections/arrays, but will return false/-1/etc.

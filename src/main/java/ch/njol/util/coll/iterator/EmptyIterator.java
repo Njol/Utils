@@ -17,22 +17,47 @@
  * 
  */
 
-package ch.njol.util;
+package ch.njol.util.coll.iterator;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * @author Peter Güttinger
+ * @param <T>
  */
-public interface BidiMap<T1, T2> extends Map<T1, T2> {
+public class EmptyIterator<T> implements Iterator<T> {
 	
-	public BidiHashMap<T2, T1> getReverseView();
+	public final static EmptyIterator<Object> instance = new EmptyIterator<Object>();
 	
-	public T1 getKey(final Object value);
+	@SuppressWarnings("unchecked")
+	public final static <T> EmptyIterator<T> get() {
+		return (EmptyIterator<T>) instance;
+	}
 	
-	public T2 getValue(final Object key);
+	@Override
+	public boolean hasNext() {
+		return false;
+	}
 	
-	public Set<T2> valueSet();
+	@Override
+	public T next() {
+		throw new NoSuchElementException();
+	}
+	
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		return obj instanceof EmptyIterator;
+	}
+	
+	@Override
+	public int hashCode() {
+		return 0;
+	}
 	
 }

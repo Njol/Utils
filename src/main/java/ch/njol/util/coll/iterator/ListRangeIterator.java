@@ -17,7 +17,7 @@
  * 
  */
 
-package ch.njol.util.iterator;
+package ch.njol.util.coll.iterator;
 
 import java.util.Iterator;
 import java.util.List;
