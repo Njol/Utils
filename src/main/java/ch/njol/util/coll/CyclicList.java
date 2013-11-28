@@ -26,22 +26,30 @@ import java.util.Collection;
 /**
  * @author Peter Güttinger
  */
-public final class FixedSizeList<E> extends AbstractList<E> {
+public final class CyclicList<E> extends AbstractList<E> {
 	
 	private final Object[] items;
 	private int start = 0;
 	
-	public FixedSizeList(final int size) {
+	public CyclicList(final int size) {
 		this.items = new Object[size];
 	}
 	
-	public FixedSizeList(final E[] array) {
+	public CyclicList(final E[] array) {
 		this.items = new Object[array.length];
 		System.arraycopy(array, 0, items, 0, array.length);
 	}
 	
-	public FixedSizeList(final Collection<E> c) {
+	public CyclicList(final Collection<E> c) {
 		this.items = c.toArray();
+	}
+	
+	private final int toInternalIndex(int index) {
+		return (start + index) % items.length;
+	}
+	
+	private final int toExternalIndex(int internal) {
+		return (internal - start + items.length) % items.length;
 	}
 	
 	@Override
@@ -50,14 +58,14 @@ public final class FixedSizeList<E> extends AbstractList<E> {
 	}
 	
 	public boolean addFirst(final E e) {
-		start--;
+		start = (start + items.length - 1) % items.length;
 		items[start] = e;
 		return true;
 	}
 	
 	public boolean addLast(final E e) {
 		items[start] = e;
-		start++;
+		start = (start + 1) % items.length;
 		return true;
 	}
 	
@@ -92,12 +100,12 @@ public final class FixedSizeList<E> extends AbstractList<E> {
 	@Override
 	public E get(final int index) {
 		rangeCheck(index);
-		return (E) items[(start + index) % items.length];
+		return (E) items[toInternalIndex(index)];
 	}
 	
 	@Override
 	public int indexOf(final Object o) {
-		return CollectionUtils.indexOf(items, o);
+		return toExternalIndex(CollectionUtils.indexOf(items, o));
 	}
 	
 	@Override
@@ -107,7 +115,7 @@ public final class FixedSizeList<E> extends AbstractList<E> {
 	
 	@Override
 	public int lastIndexOf(final Object o) {
-		return CollectionUtils.lastIndexOf(items, o);
+		return toExternalIndex(CollectionUtils.lastIndexOf(items, o));
 	}
 	
 	@Override
@@ -133,10 +141,10 @@ public final class FixedSizeList<E> extends AbstractList<E> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public E set(final int index, final E e) {
-		if (index < 0 || index >= items.length)
-			throw new IndexOutOfBoundsException(index + "/" + items.length);
-		final E old = (E) items[(start + index) % items.length];
-		items[(start + index) % items.length] = e;
+		rangeCheck(index);
+		int i = toInternalIndex(index);
+		final E old = (E) items[i];
+		items[i] = e;
 		return old;
 	}
 	

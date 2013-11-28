@@ -242,7 +242,7 @@ public abstract class CollectionUtils {
 	
 	private final static Random random = new Random();
 	
-	public static <T> T random(final T[] os) {
+	public static <T> T getRandom(final T[] os) {
 		if (os == null || os.length == 0)
 			return null;
 		return os[random.nextInt(os.length)];
@@ -334,6 +334,27 @@ public abstract class CollectionUtils {
 		for (int i = 0; i < length; i++) {
 			final int j = random.nextInt(length);
 			final int b = r[i];
+			r[i] = r[j];
+			r[j] = b;
+		}
+		return r;
+	}
+	
+	/**
+	 * Creates a permutation of all bytes in the interval [start, end]
+	 * 
+	 * @param start The lowest number which will be included in the permutation
+	 * @param end The highest number which will be included in the permutation
+	 * @return an array of length end - start + 1
+	 */
+	public static final byte[] permutation(final byte start, final byte end) {
+		final int length = end - start + 1;
+		final byte[] r = new byte[length];
+		for (byte i = 0; i < length; i++)
+			r[i] = (byte) (start + i);
+		for (int i = 0; i < length; i++) {
+			final int j = random.nextInt(length);
+			final byte b = r[i];
 			r[i] = r[j];
 			r[j] = b;
 		}

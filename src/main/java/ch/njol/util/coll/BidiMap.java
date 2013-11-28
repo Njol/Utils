@@ -29,9 +29,9 @@ public interface BidiMap<T1, T2> extends Map<T1, T2> {
 	
 	public BidiHashMap<T2, T1> getReverseView();
 	
-	public T1 getKey(final Object value);
+	public T1 getKey(final T2 value);
 	
-	public T2 getValue(final Object key);
+	public T2 getValue(final T1 key);
 	
 	public Set<T2> valueSet();
 	

@@ -289,6 +289,12 @@ public abstract class StringUtils {
 	}
 	
 	public final static String multiply(final String s, final int amount) {
+		if (s == null)
+			return null;
+		if (amount == 0)
+			return "";
+		if (amount == 1)
+			return s;
 		assert s != null;
 		assert amount >= 0 : amount;
 		final char[] input = s.toCharArray();
@@ -299,6 +305,8 @@ public abstract class StringUtils {
 	}
 	
 	public final static String multiply(final char c, final int amount) {
+		if (amount == 0)
+			return "";
 		final char[] multiplied = new char[amount];
 		for (int i = 0; i < amount; i++)
 			multiplied[i] = c;
