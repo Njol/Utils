@@ -44,11 +44,11 @@ public final class CyclicList<E> extends AbstractList<E> {
 		this.items = c.toArray();
 	}
 	
-	private final int toInternalIndex(int index) {
+	private final int toInternalIndex(final int index) {
 		return (start + index) % items.length;
 	}
 	
-	private final int toExternalIndex(int internal) {
+	private final int toExternalIndex(final int internal) {
 		return (internal - start + items.length) % items.length;
 	}
 	
@@ -142,7 +142,7 @@ public final class CyclicList<E> extends AbstractList<E> {
 	@Override
 	public E set(final int index, final E e) {
 		rangeCheck(index);
-		int i = toInternalIndex(index);
+		final int i = toInternalIndex(index);
 		final E old = (E) items[i];
 		items[i] = e;
 		return old;
