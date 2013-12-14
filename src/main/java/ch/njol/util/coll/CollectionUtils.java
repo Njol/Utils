@@ -225,7 +225,7 @@ public abstract class CollectionUtils {
 	
 	/**
 	 * @param classes Array of classes
-	 * @param c The classes to look for
+	 * @param cs The classes to look for
 	 * @return Whether the classes or any of their superclasses are contained in the array
 	 */
 	public final static boolean containsAnySuperclass(final Class<?>[] classes, final Class<?>... cs) {

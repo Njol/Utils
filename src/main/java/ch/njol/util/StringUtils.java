@@ -87,12 +87,7 @@ public abstract class StringUtils {
 	}
 	
 	public static int count(final String s, final char c) {
-		int r = 0;
-		for (int i = 0; i < s.length(); i++) {
-			if (c == s.charAt(i))
-				r++;
-		}
-		return r;
+		return count(s, c, 0, s.length());
 	}
 	
 	public static int count(final String s, final char c, final int start) {
