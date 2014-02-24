@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import ch.njol.util.coll.iterator.ReversedListIterator;
 
 /**
@@ -50,7 +52,7 @@ public class ReversedListView<T> implements List<T> {
 	}
 	
 	@Override
-	public boolean contains(final Object o) {
+	public boolean contains(final @Nullable Object o) {
 		return list.contains(o);
 	}
 	
@@ -97,7 +99,7 @@ public class ReversedListView<T> implements List<T> {
 	}
 	
 	@Override
-	public boolean remove(final Object o) {
+	public boolean remove(final @Nullable Object o) {
 		final int i = list.lastIndexOf(o);
 		if (i != -1)
 			list.remove(i);
@@ -105,7 +107,7 @@ public class ReversedListView<T> implements List<T> {
 	}
 	
 	@Override
-	public boolean containsAll(final Collection<?> c) {
+	public boolean containsAll(final @Nullable Collection<?> c) {
 		return list.containsAll(c);
 	}
 	
@@ -120,12 +122,12 @@ public class ReversedListView<T> implements List<T> {
 	}
 	
 	@Override
-	public boolean removeAll(final Collection<?> c) {
+	public boolean removeAll(final @Nullable Collection<?> c) {
 		return list.removeAll(c);
 	}
 	
 	@Override
-	public boolean retainAll(final Collection<?> c) {
+	public boolean retainAll(final @Nullable Collection<?> c) {
 		return list.retainAll(c);
 	}
 	
@@ -135,11 +137,13 @@ public class ReversedListView<T> implements List<T> {
 	}
 	
 	@Override
+	@Nullable
 	public T get(final int index) {
 		return list.get(size() - index - 1);
 	}
 	
 	@Override
+	@Nullable
 	public T set(final int index, final T element) {
 		return list.set(size() - index - 1, element);
 	}
@@ -150,23 +154,27 @@ public class ReversedListView<T> implements List<T> {
 	}
 	
 	@Override
+	@Nullable
 	public T remove(final int index) {
 		return list.remove(size() - index - 1);
 	}
 	
 	@Override
-	public int indexOf(final Object o) {
+	public int indexOf(final @Nullable Object o) {
 		return size() - list.lastIndexOf(o) - 1;
 	}
 	
 	@Override
-	public int lastIndexOf(final Object o) {
+	public int lastIndexOf(final @Nullable Object o) {
 		return size() - list.indexOf(o) - 1;
 	}
 	
 	@Override
-	public List<T> subList(final int fromIndex, final int toIndex) {
-		return new ReversedListView<T>(list.subList(size() - toIndex, size() - fromIndex));
+	public ReversedListView<T> subList(final int fromIndex, final int toIndex) {
+		final List<T> l = list.subList(size() - toIndex, size() - fromIndex);
+		if (l == null)
+			throw new UnsupportedOperationException("" + l);
+		return new ReversedListView<T>(l);
 	}
 	
 	@Override
@@ -178,7 +186,7 @@ public class ReversedListView<T> implements List<T> {
 	}
 	
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean equals(final @Nullable Object obj) {
 		if (obj == this)
 			return true;
 		if (!(obj instanceof List<?>))

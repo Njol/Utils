@@ -24,6 +24,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
@@ -60,6 +62,8 @@ public abstract class StringUtils {
 	 *            If the callback returns null for any given match this function will immediately terminate and return null.
 	 * @return
 	 */
+	@SuppressWarnings("null")
+	@Nullable
 	public final static String replaceAll(final CharSequence string, final String regex, final Callback<String, Matcher> callback) {
 		return replaceAll(string, Pattern.compile(regex), callback);
 	}
@@ -73,6 +77,7 @@ public abstract class StringUtils {
 	 *            If the callback returns null for any given match this function will immediately terminate and return null.
 	 * @return
 	 */
+	@Nullable
 	public final static String replaceAll(final CharSequence string, final Pattern regex, final Callback<String, Matcher> callback) {
 		final Matcher m = regex.matcher(string);
 		final StringBuffer sb = new StringBuffer();
@@ -130,7 +135,7 @@ public abstract class StringUtils {
 			c--;
 		if (s.charAt(c) == '.')
 			c--;
-		return s.substring(0, c + 1);
+		return "" + s.substring(0, c + 1);
 	}
 	
 	public static final String firstToUpper(final String s) {
@@ -156,7 +161,7 @@ public abstract class StringUtils {
 			end = end + s.length();
 		if (end < start)
 			throw new IllegalArgumentException("invalid indices");
-		return s.substring(start, end);
+		return "" + s.substring(start, end);
 	}
 	
 	/**
@@ -283,15 +288,14 @@ public abstract class StringUtils {
 		return string.substring(string.length() - end.length()).equalsIgnoreCase(end);
 	}
 	
-	public final static String multiply(final String s, final int amount) {
+	public final static String multiply(final @Nullable String s, final int amount) {
+		assert amount >= 0 : amount;
 		if (s == null)
-			return null;
-		if (amount == 0)
+			return "";
+		if (amount <= 0)
 			return "";
 		if (amount == 1)
 			return s;
-		assert s != null;
-		assert amount >= 0 : amount;
 		final char[] input = s.toCharArray();
 		final char[] multiplied = new char[input.length * amount];
 		for (int i = 0; i < amount; i++)
@@ -308,16 +312,21 @@ public abstract class StringUtils {
 		return new String(multiplied);
 	}
 	
-	public static String join(final Object[] strings) {
+	public static String join(final @Nullable Object[] strings) {
+		if (strings == null)
+			return "";
 		return join(strings, "", 0, strings.length);
 	}
 	
-	public static String join(final Object[] strings, final String delimiter) {
+	public static String join(final @Nullable Object[] strings, final String delimiter) {
+		if (strings == null)
+			return "";
 		return join(strings, delimiter, 0, strings.length);
 	}
 	
-	public static String join(final Object[] strings, final String delimiter, final int start, final int end) {
-		assert strings != null;
+	public static String join(final @Nullable Object[] strings, final String delimiter, final int start, final int end) {
+		if (strings == null)
+			return "";
 		assert start >= 0 && start < end && end <= strings.length : start + "," + end;
 		if (start >= strings.length)
 			return "";
@@ -326,27 +335,30 @@ public abstract class StringUtils {
 			b.append(delimiter);
 			b.append(strings[i]);
 		}
-		return b.toString();
+		return "" + b;
 	}
 	
-	public static String join(final Iterable<?> strings) {
+	public static String join(final @Nullable Iterable<?> strings) {
+		if (strings == null)
+			return "";
 		return join(strings.iterator(), "");
 	}
 	
-	public static String join(final Iterable<?> strings, final String delimiter) {
+	public static String join(final @Nullable Iterable<?> strings, final String delimiter) {
+		if (strings == null)
+			return "";
 		return join(strings.iterator(), delimiter);
 	}
 	
-	public static String join(final Iterator<?> strings, final String delimiter) {
-		assert strings != null;
-		if (!strings.hasNext())
+	public static String join(final @Nullable Iterator<?> strings, final String delimiter) {
+		if (strings == null || !strings.hasNext())
 			return "";
 		final StringBuilder b = new StringBuilder("" + strings.next());
 		while (strings.hasNext()) {
 			b.append(delimiter);
 			b.append(strings.next());
 		}
-		return b.toString();
+		return "" + b;
 	}
 	
 	/**
@@ -390,8 +402,8 @@ public abstract class StringUtils {
 	
 	public final static String replace(final String haystack, final String needle, final String replacement, final boolean caseSensitive) {
 		if (caseSensitive)
-			return haystack.replace(needle, replacement);
-		return haystack.replaceAll("(?ui)" + Pattern.quote(needle), replacement);
+			return "" + haystack.replace(needle, replacement);
+		return "" + haystack.replaceAll("(?ui)" + Pattern.quote(needle), replacement);
 	}
 	
 }

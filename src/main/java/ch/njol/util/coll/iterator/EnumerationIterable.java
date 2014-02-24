@@ -24,19 +24,27 @@ package ch.njol.util.coll.iterator;
 import java.util.Enumeration;
 import java.util.Iterator;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
+ * TODO this should actually only be an Iterator
+ * 
  * @author Peter Güttinger
  */
 public class EnumerationIterable<T> implements Iterable<T> {
 	
-	private final Enumeration<? extends T> e;
+	@Nullable
+	final Enumeration<? extends T> e;
 	
-	public EnumerationIterable(final Enumeration<? extends T> e) {
+	public EnumerationIterable(final @Nullable Enumeration<? extends T> e) {
 		this.e = e;
 	}
 	
 	@Override
 	public Iterator<T> iterator() {
+		final Enumeration<? extends T> e = this.e;
+		if (e == null)
+			return EmptyIterator.get();
 		return new Iterator<T>() {
 			@Override
 			public boolean hasNext() {
@@ -44,6 +52,7 @@ public class EnumerationIterable<T> implements Iterable<T> {
 			}
 			
 			@Override
+			@Nullable
 			public T next() {
 				return e.nextElement();
 			}

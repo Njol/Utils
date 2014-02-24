@@ -40,8 +40,8 @@ public enum Kleenean {
 	
 	@Override
 	public final String toString() {
-		return name().toLowerCase();
-	};
+		return "" + name().toLowerCase();
+	}
 	
 	public final Kleenean is(final Kleenean other) {
 		if (other == UNKNOWN || this == UNKNOWN)

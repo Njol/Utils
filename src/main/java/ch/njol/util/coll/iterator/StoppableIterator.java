@@ -22,7 +22,9 @@ package ch.njol.util.coll.iterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import ch.njol.util.Checker;
+import org.eclipse.jdt.annotation.Nullable;
+
+import ch.njol.util.NullableChecker;
 
 /**
  * @author Peter Güttinger
@@ -30,8 +32,10 @@ import ch.njol.util.Checker;
 public class StoppableIterator<T> implements Iterator<T> {
 	
 	private final Iterator<T> iter;
-	private final Checker<T> stopper;
+	private final NullableChecker<T> stopper;
+	
 	private final boolean returnLast;
+	@Nullable
 	private T current;
 	
 	private boolean stopped = false;
@@ -43,7 +47,7 @@ public class StoppableIterator<T> implements Iterator<T> {
 	 * @param returnLast Whether to return the last element, i.e. the element on which the stopper stops.
 	 *            This doesn't change anything if the iterator ends before the stopper stops.
 	 */
-	public StoppableIterator(final Iterator<T> iter, final Checker<T> stopper, final boolean returnLast) {
+	public StoppableIterator(final Iterator<T> iter, final NullableChecker<T> stopper, final boolean returnLast) {
 		assert stopper != null;
 		this.iter = iter;
 		this.stopper = stopper;
@@ -69,6 +73,7 @@ public class StoppableIterator<T> implements Iterator<T> {
 	}
 	
 	@Override
+	@Nullable
 	public T next() {
 		if (!hasNext())
 			throw new NoSuchElementException();

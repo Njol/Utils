@@ -24,13 +24,18 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 public class ListRangeIterator<T> implements Iterator<T> {
 	
 	private final ListIterator<T> iter;
 	private int end;
 	
 	public ListRangeIterator(final List<T> list, final int start, final int end) {
-		this.iter = list.listIterator(start);
+		final ListIterator<T> iter = list.listIterator(start);
+		if (iter == null)
+			throw new IllegalArgumentException("" + list);
+		this.iter = iter;
 		this.end = end;
 	}
 	
@@ -40,6 +45,7 @@ public class ListRangeIterator<T> implements Iterator<T> {
 	}
 	
 	@Override
+	@Nullable
 	public T next() {
 		if (!hasNext())
 			throw new NoSuchElementException();

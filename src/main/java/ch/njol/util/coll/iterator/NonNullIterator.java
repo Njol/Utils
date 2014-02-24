@@ -22,12 +22,16 @@ package ch.njol.util.coll.iterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
 public abstract class NonNullIterator<T> implements Iterator<T> {
 	
+	@Nullable
 	private T current = null;
+	
 	private boolean ended = false;
 	
 	@Override
@@ -42,6 +46,7 @@ public abstract class NonNullIterator<T> implements Iterator<T> {
 		return !ended;
 	}
 	
+	@Nullable
 	protected abstract T getNext();
 	
 	@Override
@@ -50,6 +55,7 @@ public abstract class NonNullIterator<T> implements Iterator<T> {
 			throw new NoSuchElementException();
 		final T t = current;
 		current = null;
+		assert t != null;
 		return t;
 	}
 	

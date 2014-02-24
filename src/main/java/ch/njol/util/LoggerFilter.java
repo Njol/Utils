@@ -21,16 +21,18 @@
 
 package ch.njol.util;
 
-import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Filter;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 public final class LoggerFilter implements Filter, Closeable {
 	private final Logger l;
 	private final Collection<Filter> filters = new ArrayList<Filter>(5);
+	@Nullable
 	private final Filter oldFilter;
 	
 	public LoggerFilter(final Logger l) {
@@ -40,7 +42,7 @@ public final class LoggerFilter implements Filter, Closeable {
 	}
 	
 	@Override
-	public boolean isLoggable(final LogRecord record) {
+	public boolean isLoggable(final @Nullable LogRecord record) {
 		if (oldFilter != null && !oldFilter.isLoggable(record))
 			return false;
 		for (final Filter f : filters)
@@ -50,9 +52,7 @@ public final class LoggerFilter implements Filter, Closeable {
 	}
 	
 	public final void addFilter(final Filter f) {
-		assert f != null;
-		if (f != null)
-			filters.add(f);
+		filters.add(f);
 	}
 	
 	public final boolean removeFilter(final Filter f) {

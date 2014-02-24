@@ -19,8 +19,24 @@
 
 package ch.njol.util;
 
-public interface Checker<T> {
+import org.junit.Test;
+
+/**
+ * @author Peter Güttinger
+ */
+public class Math2Test {
 	
-	public boolean check(T o);
+	@Test
+	public void test() {
+		
+		final int[][] modvs = { {5, 4, 1}, {-3, 4, 1}, {4, 4, 0}, {-4, 4, 0}, {-100, 5, 0}, {-50, 100, 50}};
+		for (final int[] v : modvs)
+			assert Math2.mod(v[0], v[1]) == v[2] : "mod(" + v[0] + "," + v[1] + ") != " + v[2];
+		
+		final int[][] p2vs = { {1, 1}, {2, 2}, {7, 8}, {8, 8}, {9, 16}};
+		for (final int[] v : p2vs)
+			assert Math2.nextPowerOfTwo(v[0]) == v[1] : Math2.nextPowerOfTwo(v[0]) + " != " + v[1];
+		
+	}
 	
 }

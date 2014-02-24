@@ -21,9 +21,13 @@ package ch.njol.util.coll.iterator;
 
 import java.util.Iterator;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 public class ImprovedIterator<T> implements Iterator<T> {
 	
 	private final Iterator<T> iter;
+	
+	@Nullable
 	private T current = null;
 	
 	public ImprovedIterator(final Iterator<T> iter) {
@@ -36,6 +40,7 @@ public class ImprovedIterator<T> implements Iterator<T> {
 	}
 	
 	@Override
+	@Nullable
 	public T next() {
 		return current = iter.next();
 	}
@@ -45,6 +50,7 @@ public class ImprovedIterator<T> implements Iterator<T> {
 		iter.remove();
 	}
 	
+	@Nullable
 	public T current() {
 		return current;
 	}

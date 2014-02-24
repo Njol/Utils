@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
@@ -53,21 +55,25 @@ public class BidiHashMap<T1, T2> extends HashMap<T1, T2> implements BidiMap<T1, 
 	}
 	
 	@Override
-	public T1 getKey(final T2 value) {
+	@Nullable
+	public T1 getKey(final @Nullable T2 value) {
 		return other.get(value);
 	}
 	
 	@Override
-	public T2 getValue(final T1 key) {
+	@Nullable
+	public T2 getValue(final @Nullable T1 key) {
 		return get(key);
 	}
 	
-	private T2 putDirect(final T1 key, final T2 value) {
+	@Nullable
+	private T2 putDirect(final @Nullable T1 key, final @Nullable T2 value) {
 		return super.put(key, value);
 	}
 	
 	@Override
-	public T2 put(final T1 key, final T2 value) {
+	@Nullable
+	public T2 put(final @Nullable T1 key, final @Nullable T2 value) {
 		if (key == null || value == null)
 			throw new NullPointerException("Can't store null in a BidiHashMap");
 		
@@ -93,12 +99,14 @@ public class BidiHashMap<T1, T2> extends HashMap<T1, T2> implements BidiMap<T1, 
 		}
 	}
 	
-	private T2 removeDirect(final Object key) {
+	@Nullable
+	private T2 removeDirect(final @Nullable Object key) {
 		return super.remove(key);
 	}
 	
 	@Override
-	public T2 remove(final Object key) {
+	@Nullable
+	public T2 remove(final @Nullable Object key) {
 		final T2 oldValue = removeDirect(key);
 		if (oldValue != null)
 			other.removeDirect(oldValue);
@@ -116,15 +124,18 @@ public class BidiHashMap<T1, T2> extends HashMap<T1, T2> implements BidiMap<T1, 
 	}
 	
 	@Override
-	public boolean containsValue(final Object value) {
+	public boolean containsValue(final @Nullable Object value) {
 		return other.containsKey(value);
 	}
 	
+	// TODO check how changes to the set affect the map
+	@SuppressWarnings("null")
 	@Override
 	public Collection<T2> values() {
 		return other.keySet();
 	}
 	
+	@SuppressWarnings("null")
 	@Override
 	public Set<T2> valueSet() {
 		return other.keySet();

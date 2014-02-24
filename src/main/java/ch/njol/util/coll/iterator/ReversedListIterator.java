@@ -22,6 +22,8 @@ package ch.njol.util.coll.iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Peter Güttinger
  */
@@ -30,13 +32,21 @@ public class ReversedListIterator<T> implements ListIterator<T> {
 	private final ListIterator<T> iter;
 	
 	public ReversedListIterator(final List<T> list) {
-		assert list != null;
-		iter = list.listIterator(list.size());
+		final ListIterator<T> iter = list.listIterator(list.size());
+		if (iter == null)
+			throw new IllegalArgumentException("" + list);
+		this.iter = iter;
 	}
 	
 	public ReversedListIterator(final List<T> list, final int index) {
-		assert list != null;
-		iter = list.listIterator(list.size() - index);
+		final ListIterator<T> iter = list.listIterator(list.size() - index);
+		if (iter == null)
+			throw new IllegalArgumentException("" + list);
+		this.iter = iter;
+	}
+	
+	public ReversedListIterator(final ListIterator<T> iter) {
+		this.iter = iter;
 	}
 	
 	@Override
@@ -45,6 +55,7 @@ public class ReversedListIterator<T> implements ListIterator<T> {
 	}
 	
 	@Override
+	@Nullable
 	public T next() {
 		return iter.previous();
 	}
@@ -55,6 +66,7 @@ public class ReversedListIterator<T> implements ListIterator<T> {
 	}
 	
 	@Override
+	@Nullable
 	public T previous() {
 		return iter.next();
 	}
@@ -75,12 +87,12 @@ public class ReversedListIterator<T> implements ListIterator<T> {
 	}
 	
 	@Override
-	public void set(final T e) {
+	public void set(final @Nullable T e) {
 		iter.set(e);
 	}
 	
 	@Override
-	public void add(final T e) {
+	public void add(final @Nullable T e) {
 		throw new UnsupportedOperationException();
 	}
 	

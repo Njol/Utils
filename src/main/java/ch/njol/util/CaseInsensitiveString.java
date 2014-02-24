@@ -22,6 +22,8 @@ package ch.njol.util;
 import java.io.Serializable;
 import java.util.Locale;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A string which is compared ignoring it's case.
  * 
@@ -36,16 +38,17 @@ public class CaseInsensitiveString implements Serializable, Comparable<CharSeque
 	
 	private final Locale locale;
 	
+	@SuppressWarnings("null")
 	public CaseInsensitiveString(final String s) {
 		this.s = s;
 		locale = Locale.getDefault();
-		lc = s.toLowerCase(locale);
+		lc = "" + s.toLowerCase(locale);
 	}
 	
 	public CaseInsensitiveString(final String s, final Locale locale) {
 		this.s = s;
 		this.locale = locale;
-		lc = s.toLowerCase(locale);
+		lc = "" + s.toLowerCase(locale);
 	}
 	
 	@Override
@@ -54,7 +57,7 @@ public class CaseInsensitiveString implements Serializable, Comparable<CharSeque
 	}
 	
 	@Override
-	public boolean equals(final Object o) {
+	public boolean equals(final @Nullable Object o) {
 		if (o == this)
 			return true;
 		if (o instanceof CharSequence)
@@ -79,7 +82,7 @@ public class CaseInsensitiveString implements Serializable, Comparable<CharSeque
 	
 	@Override
 	public CaseInsensitiveString subSequence(final int start, final int end) {
-		return new CaseInsensitiveString(s.substring(start, end), locale);
+		return new CaseInsensitiveString("" + s.substring(start, end), locale);
 	}
 	
 	@Override
