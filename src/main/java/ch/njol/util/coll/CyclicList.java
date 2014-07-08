@@ -13,7 +13,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Copyright 2011-2013 Peter Güttinger
+ * Copyright 2011-2014 Peter Güttinger
  * 
  */
 
@@ -25,7 +25,11 @@ import java.util.Collection;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import ch.njol.util.Math2;
+
 /**
+ * A list with fixed size that overrides the oldest elements when new elements are added and no more space is available.
+ * 
  * @author Peter Güttinger
  */
 public final class CyclicList<E> extends AbstractList<E> {
@@ -50,11 +54,11 @@ public final class CyclicList<E> extends AbstractList<E> {
 	}
 	
 	private final int toInternalIndex(final int index) {
-		return (start + index) % items.length;
+		return Math2.mod(start + index, items.length);
 	}
 	
 	private final int toExternalIndex(final int internal) {
-		return (internal - start + items.length) % items.length;
+		return Math2.mod(internal - start, items.length);
 	}
 	
 	@Override
@@ -63,14 +67,14 @@ public final class CyclicList<E> extends AbstractList<E> {
 	}
 	
 	public boolean addFirst(final @Nullable E e) {
-		start = (start + items.length - 1) % items.length;
+		start = Math2.mod(start - 1, items.length);
 		items[start] = e;
 		return true;
 	}
 	
 	public boolean addLast(final @Nullable E e) {
 		items[start] = e;
-		start = (start + 1) % items.length;
+		start = Math2.mod(start + 1, items.length);
 		return true;
 	}
 	

@@ -13,7 +13,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Copyright 2011-2013 Peter Güttinger
+ * Copyright 2011-2014 Peter Güttinger
  * 
  */
 
@@ -165,7 +165,7 @@ public abstract class StringUtils {
 	}
 	
 	/**
-	 * Capitalizes the first character of the string and all characters that follow periods, exclamation and question marks.
+	 * Capitalises the first character of the string and all characters that follow periods, exclamation and question marks.
 	 * 
 	 * @param string
 	 * @return
@@ -219,13 +219,13 @@ public abstract class StringUtils {
 	/**
 	 * Finds a positive number in the given CharSequence, starting at the given index, and searching in the given direction.
 	 * <p>
-	 * The number has to start exactly at the given index (ignoring whitespaces), and will only count if the other end of the number is either at an end of the string or padded by
+	 * The number has to start exactly at the given index (ignoring whitespace), and will only count if the other end of the number is either at an end of the string or padded by
 	 * whitespace.
 	 * 
 	 * @param s The ChatSequence to search the number in
 	 * @param index The index to start searching at (inclusive)
 	 * @param forward Whether to search forwards or backwards
-	 * @return The number found or -1 if no mtching number was found
+	 * @return The number found or -1 if no matching number was found
 	 */
 	public final static double numberAt(final CharSequence s, final int index, final boolean forward) {
 		assert s != null;
@@ -327,8 +327,8 @@ public abstract class StringUtils {
 	public static String join(final @Nullable Object[] strings, final String delimiter, final int start, final int end) {
 		if (strings == null)
 			return "";
-		assert start >= 0 && start < end && end <= strings.length : start + "," + end;
-		if (start >= strings.length)
+		assert start >= 0 && start <= end && end <= strings.length : start + ", " + end + ", " + strings.length;
+		if (start < 0 || start >= strings.length || start == end)
 			return "";
 		final StringBuilder b = new StringBuilder("" + strings[start]);
 		for (int i = start + 1; i < end; i++) {

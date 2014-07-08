@@ -13,7 +13,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Copyright 2011-2013 Peter Güttinger
+ * Copyright 2011-2014 Peter Güttinger
  * 
  */
 
@@ -31,7 +31,7 @@ public abstract class Math2 {
 		return a <= b ? (a <= c ? a : c) : (b <= c ? b : c);
 	}
 	
-	public static int min(final int... nums) {
+	public final static int min(final int... nums) {
 		if (nums == null || nums.length == 0) {
 			assert false;
 			return 0;
@@ -167,7 +167,7 @@ public abstract class Math2 {
 	 * 
 	 * @param d
 	 * @param m
-	 * @return <tt>d < 0 ? d%m + m : d%m</tt>
+	 * @return <tt>d%m < 0 ? d%m + m : d%m</tt>
 	 */
 	public final static double mod(final double d, final double m) {
 		final double r = d % m;
@@ -179,7 +179,7 @@ public abstract class Math2 {
 	 * 
 	 * @param d
 	 * @param m
-	 * @return <tt>d < 0 ? d%m + m : d%m</tt>
+	 * @return <tt>d%m < 0 ? d%m + m : d%m</tt>
 	 */
 	public final static float mod(final float d, final float m) {
 		final float r = d % m;
@@ -212,111 +212,186 @@ public abstract class Math2 {
 	
 	/**
 	 * Floors the given double and returns the result as a long.
-	 * 
-	 * @return <tt>d >= 0 ? (long) d : (long) d - 1</tt>
+	 * <p>
+	 * This method can be up to 20 times faster than the default {@link Math#floor(double)} (both with and without casting to long).
 	 */
 	public final static long floor(final double d) {
-		return d >= 0 ? (long) d : (long) d - 1;
+		final long l = (long) d;
+		if (!(d < 0)) // d >= 0 || d == NaN
+			return l;
+		if (l == Long.MIN_VALUE)
+			return Long.MIN_VALUE;
+		return d == l ? l : l - 1;
 	}
 	
 	/**
 	 * Ceils the given double and returns the result as a long.
-	 * 
-	 * @return <tt>-{@link #floor(double) floor}(-d)</tt>
+	 * <p>
+	 * This method can be up to 20 times faster than the default {@link Math#ceil(double)} (both with and without casting to long).
 	 */
 	public final static long ceil(final double d) {
-		return -floor(-d);
+		final long l = (long) d;
+		if (!(d > 0)) // d <= 0 || d == NaN
+			return l;
+		if (l == Long.MAX_VALUE)
+			return Long.MAX_VALUE;
+		return d == l ? l : l + 1;
 	}
 	
 	/**
 	 * Rounds the given double (where .5 is rounded up) and returns the result as a long.
-	 * 
-	 * @return <tt>{@link #floor(double) floor}(d + 0.5)</tt>
+	 * <p>
+	 * This method is more exact and faster than {@link Math#round(double)} of Java 7 and older.
 	 */
 	public final static long round(final double d) {
 		if (d == 0x1.fffffffffffffp-2) // greatest double value less than 0.5
 			return 0;
-		else
-			return floor(d + 0.5);
+		if (Math.getExponent(d) >= 52)
+			return (long) d;
+		return floor(d + 0.5);
 	}
 	
 	public final static int floorI(final double d) {
-		return d >= 0 ? (int) d : (int) d - 1;
+		final int i = (int) d;
+		if (!(d < 0)) // d >= 0 || d == NaN
+			return i;
+		if (i == Integer.MIN_VALUE)
+			return Integer.MIN_VALUE;
+		return d == i ? i : i - 1;
 	}
 	
 	public final static int ceilI(final double d) {
-		return -floorI(-d);
+		final int i = (int) d;
+		if (!(d > 0)) // d <= 0 || d == NaN
+			return i;
+		if (i == Integer.MAX_VALUE)
+			return Integer.MAX_VALUE;
+		return d == i ? i : i + 1;
 	}
 	
 	public final static int roundI(final double d) {
 		if (d == 0x1.fffffffffffffp-2) // greatest double value less than 0.5
 			return 0;
-		else
-			return floorI(d + 0.5);
+		if (Math.getExponent(d) >= 52)
+			return (int) d;
+		return floorI(d + 0.5);
 	}
 	
 	public final static long floor(final float f) {
-		return f >= 0 ? (long) f : (long) f - 1;
+		final long l = (long) f;
+		if (!(f < 0)) // f >= 0 || f == NaN
+			return l;
+		if (l == Long.MIN_VALUE)
+			return Long.MIN_VALUE;
+		return f == l ? l : l - 1;
 	}
 	
 	public final static long ceil(final float f) {
-		return -floor(-f);
+		final long l = (long) f;
+		if (!(f > 0)) // f <= 0 || f == NaN
+			return l;
+		if (l == Long.MAX_VALUE)
+			return Long.MAX_VALUE;
+		return f == l ? l : l + 1;
 	}
 	
+	/**
+	 * Rounds the given float (where .5 is rounded up) and returns the result as a long.
+	 * <p>
+	 * This method is more exact and faster than {@link Math#round(float)} of Java 7 and older.
+	 */
 	public final static long round(final float f) {
 		if (f == 0x1.fffffep-2f) // greatest float value less than 0.5
 			return 0;
-		else
-			return floor(f + 0.5f);
+		if (Math.getExponent(f) >= 23)
+			return (long) f;
+		return floor(f + 0.5f);
 	}
 	
 	public final static int floorI(final float f) {
-		return f >= 0 ? (int) f : (int) f - 1;
+		final int i = (int) f;
+		if (!(f < 0)) // f >= 0 || f == NaN
+			return i;
+		if (i == Integer.MIN_VALUE)
+			return Integer.MIN_VALUE;
+		return f == i ? i : i - 1;
 	}
 	
 	public final static int ceilI(final float f) {
-		return -floorI(-f);
+		final int i = (int) f;
+		if (!(f > 0)) // f <= 0 || f == NaN
+			return i;
+		if (i == Integer.MAX_VALUE)
+			return Integer.MAX_VALUE;
+		return f == i ? i : i + 1;
 	}
 	
+	/**
+	 * Rounds the given float (where .5 is rounded up) and returns the result as an int.
+	 * <p>
+	 * This method is more exact and faster than {@link Math#round(float)} of Java 7 and older.
+	 */
 	public final static int roundI(final float f) {
 		if (f == 0x1.fffffep-2f) // greatest float value less than 0.5
 			return 0;
-		else
-			return floorI(f + 0.5f);
+		if (Math.getExponent(f) >= 23)
+			return (int) f;
+		return floorI(f + 0.5f);
 	}
 	
 	/**
-	 * Gets the smallest power of two &ge;n (for positive n only)
+	 * Gets the smallest power of two &ge;n. Returns {@link Integer#MIN_VALUE} if <tt>n > 2<sup>30</sup></tt>.
 	 */
 	public final static int nextPowerOfTwo(final int n) {
-		assert n >= 0;
-		if ((n & (n - 1)) == 0) // n is already a power of two
-			return n;
-		return Integer.highestOneBit(n) << 1;
+		if (n < 0) {
+			int h = ~n;
+			h |= (h >> 1);
+			h |= (h >> 2);
+			h |= (h >> 4);
+			h |= (h >> 8);
+			h |= (h >> 16);
+			h = ~h;
+			return n == h ? n : h >> 1;
+		} else {
+			final int h = Integer.highestOneBit(n);
+			return n == h ? n : h << 1;
+		}
 	}
 	
 	/**
-	 * Gets the smallest power of two &ge;n (for positive n only)
+	 * Gets the smallest power of two &ge;n. Returns {@link Long#MIN_VALUE} if <tt>n > 2<sup>62</sup></tt>.
 	 */
 	public final static long nextPowerOfTwo(final long n) {
-		assert n >= 0;
-		if ((n & (n - 1)) == 0) // n is already a power of two
-			return n;
-		return Long.highestOneBit(n) << 1;
+		if (n < 0) {
+			long h = ~n;
+			h |= (h >> 1);
+			h |= (h >> 2);
+			h |= (h >> 4);
+			h |= (h >> 8);
+			h |= (h >> 16);
+			h |= (h >> 32);
+			h = ~h;
+			return n == h ? n : h >> 1;
+		} else {
+			final long h = Long.highestOneBit(n);
+			return n == h ? n : h << 1;
+		}
 	}
 	
 	/**
 	 * @return The floating point part of d in the range [0, 1)
 	 */
 	public final static double frac(final double d) {
-		return mod(d, 1);
+		final double r = mod(d, 1);
+		return r == 1 ? 0 : r;
 	}
 	
 	/**
 	 * @return The floating point part of f in the range [0, 1)
 	 */
 	public final static float frac(final float f) {
-		return mod(f, 1);
+		final float r = mod(f, 1);
+		return r == 1 ? 0 : r;
 	}
 	
 	/**
@@ -344,21 +419,21 @@ public abstract class Math2 {
 	 * @return -1 if i is negative, 0 if i is 0, or 1 if i is positive
 	 */
 	public final static int sign(final long i) {
-		return (int) ((i >> 63) | (-i >>> 63));
+		return (int) (i >> 63) | (int) (-i >>> 63);
 	}
 	
 	/**
 	 * @return -1 if f is negative, 0 if f is +0, -0 or NaN, or 1 if f is positive
 	 */
 	public final static int sign(final float f) {
-		return f == 0 || Float.isNaN(f) ? 0 : f > 0 ? 1 : -1;
+		return f > 0 ? 1 : f < 0 ? -1 : 0;
 	}
 	
 	/**
 	 * @return -1 if d is negative, 0 if d is +0, -0 or NaN, or 1 if d is positive
 	 */
 	public final static int sign(final double d) {
-		return d == 0 || Double.isNaN(d) ? 0 : d > 0 ? 1 : -1;
+		return d > 0 ? 1 : d < 0 ? -1 : 0;
 	}
 	
 	/**

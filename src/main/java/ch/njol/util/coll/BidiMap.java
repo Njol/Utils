@@ -13,7 +13,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Copyright 2011-2013 Peter Güttinger
+ * Copyright 2011-2014 Peter Güttinger
  * 
  */
 
@@ -27,7 +27,7 @@ import java.util.Set;
  */
 public interface BidiMap<T1, T2> extends Map<T1, T2> {
 	
-	public BidiHashMap<T2, T1> getReverseView();
+	public BidiMap<T2, T1> getReverseView();
 	
 	public T1 getKey(final T2 value);
 	

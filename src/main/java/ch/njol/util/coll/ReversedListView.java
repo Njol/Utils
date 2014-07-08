@@ -13,7 +13,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Copyright 2011-2013 Peter Güttinger
+ * Copyright 2011-2014 Peter Güttinger
  * 
  */
 
@@ -113,12 +113,17 @@ public class ReversedListView<T> implements List<T> {
 	
 	@Override
 	public boolean addAll(final Collection<? extends T> c) {
-		return list.addAll(0, c);
+		for (final T o : c)
+			list.add(0, o);
+		return true;
 	}
 	
 	@Override
 	public boolean addAll(final int index, final Collection<? extends T> c) {
-		return list.addAll(size() - index, c);
+		final int i = size() - index;
+		for (final T o : c)
+			list.add(i, o);
+		return true;
 	}
 	
 	@Override
@@ -173,7 +178,7 @@ public class ReversedListView<T> implements List<T> {
 	public ReversedListView<T> subList(final int fromIndex, final int toIndex) {
 		final List<T> l = list.subList(size() - toIndex, size() - fromIndex);
 		if (l == null)
-			throw new UnsupportedOperationException("" + l);
+			throw new UnsupportedOperationException("" + list);
 		return new ReversedListView<T>(l);
 	}
 	

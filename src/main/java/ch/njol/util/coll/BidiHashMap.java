@@ -13,13 +13,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Copyright 2011-2013 Peter Güttinger
+ * Copyright 2011-2014 Peter Güttinger
  * 
  */
 
 package ch.njol.util.coll;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -77,18 +77,10 @@ public class BidiHashMap<T1, T2> extends HashMap<T1, T2> implements BidiMap<T1, 
 		if (key == null || value == null)
 			throw new NullPointerException("Can't store null in a BidiHashMap");
 		
+		removeDirect(key);
+		other.removeDirect(value);
 		final T2 oldValue = putDirect(key, value);
-		if (oldValue != null && oldValue.equals(value)) {
-			other.putDirect(value, key);
-			return oldValue;
-		}
-		if (oldValue != null)
-			other.removeDirect(oldValue);
-		
-		final T1 oldKey = other.putDirect(value, key);
-		if (oldKey != null)
-			this.removeDirect(oldKey);
-		
+		other.putDirect(value, key);
 		return oldValue;
 	}
 	
@@ -128,17 +120,29 @@ public class BidiHashMap<T1, T2> extends HashMap<T1, T2> implements BidiMap<T1, 
 		return other.containsKey(value);
 	}
 	
-	// TODO check how changes to the set affect the map
+	// TODO check how changes to the sets affect the map
+	
 	@SuppressWarnings("null")
 	@Override
-	public Collection<T2> values() {
-		return other.keySet();
+	public Set<Entry<T1, T2>> entrySet() {
+		return Collections.unmodifiableSet(super.entrySet());
+	}
+	
+	@SuppressWarnings("null")
+	@Override
+	public Set<T1> keySet() {
+		return Collections.unmodifiableSet(super.keySet());
+	}
+	
+	@Override
+	public Set<T2> values() {
+		return valueSet();
 	}
 	
 	@SuppressWarnings("null")
 	@Override
 	public Set<T2> valueSet() {
-		return other.keySet();
+		return Collections.unmodifiableSet(other.keySet());
 	}
 	
 	@Override

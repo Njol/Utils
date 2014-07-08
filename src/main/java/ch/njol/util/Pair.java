@@ -13,7 +13,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Copyright 2011-2013 Peter Güttinger
+ * Copyright 2011-2014 Peter Güttinger
  * 
  */
 
@@ -31,9 +31,9 @@ public class Pair<T1, T2> implements Entry<T1, T2>, Cloneable, Serializable {
 	private static final long serialVersionUID = 8296563685697678334L;
 	
 	@Nullable
-	public T1 first;
+	protected T1 first;
 	@Nullable
-	public T2 second;
+	protected T2 second;
 	
 	public Pair() {
 		first = null;
@@ -50,6 +50,24 @@ public class Pair<T1, T2> implements Entry<T1, T2>, Cloneable, Serializable {
 		this.second = e.getValue();
 	}
 	
+	@Nullable
+	public T1 getFirst() {
+		return first;
+	}
+	
+	public void setFirst(final @Nullable T1 first) {
+		this.first = first;
+	}
+	
+	@Nullable
+	public T2 getSecond() {
+		return second;
+	}
+	
+	public void setSecond(final @Nullable T2 second) {
+		this.second = second;
+	}
+	
 	/**
 	 * @return "first,second"
 	 */
@@ -62,7 +80,7 @@ public class Pair<T1, T2> implements Entry<T1, T2>, Cloneable, Serializable {
 	 * Checks for equality with Entries to match {@link #hashCode()}
 	 */
 	@Override
-	public boolean equals(final @Nullable Object obj) {
+	public final boolean equals(final @Nullable Object obj) {
 		if (obj == this)
 			return true;
 		if (!(obj instanceof Entry))
@@ -78,7 +96,7 @@ public class Pair<T1, T2> implements Entry<T1, T2>, Cloneable, Serializable {
 	 * As defined by {@link Entry#hashCode()}
 	 */
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		final T1 first = this.first;
 		final T2 second = this.second;
 		return (first == null ? 0 : first.hashCode()) ^ (second == null ? 0 : second.hashCode());
